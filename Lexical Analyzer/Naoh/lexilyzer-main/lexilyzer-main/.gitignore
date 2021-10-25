@@ -1,0 +1,5 @@
+#   private data
+token.txt
+
+#   python cache
+__pycache__/
