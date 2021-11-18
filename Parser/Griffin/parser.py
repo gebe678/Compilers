@@ -42,14 +42,6 @@ token_identity = {
     "17": "}",        "33":"=",
 }
 
-program_traversal = {}
-block_traversal = {}
-statement_traversal = {}
-condition_traversal = {}
-expression_traversal = {}
-term_traversal = {}
-factor_traversal = {}
-
 def get_tokens(index):
     token_list = lex()
 
@@ -207,8 +199,96 @@ def statement(current_token):
     encoded_token = get_tokens(current_token)
     token = token_identity[encoded_token]
 
+    def ident(current_token):
+        token = decode_token(current_token)
+
+        if token != ":=":
+            print("Error: recieved ", token, " expected := ", " on token ", current_token)
+            exit()
+        else:
+            print("token ", token, " number ", current_token, " parsed successfully in ident procedure (statement)")
+            current_token += 1
+            token = decode_token(current_token)
+
+        if token != "+" or token != "-":
+            print("Error: recieved ", token, " expected + or - ", " on token ", current_token)
+            exit()
+        else:
+            print("token ", token, " number ", current_token, " parsed successfully in ident procedure (statement)")
+            current_token = expression(current_token)
+            token = decode_token(current_token)
+
+        return current_token
+    
+    def call(current_token):
+        token = decode_token(current_token)
+
+        if token != "ident":
+            print("Error: recieved ", token, " expected identifier ", " on token ", current_token)
+            exit()
+        else:
+            print("token ", token, " number ", current_token, " parsed successfully in call procedure (statement)")
+            current_token += 1
+            token = decode_token(current_token)
+
+        ### TODO find if this line is necessary not in DFA for the call line ###
+        if token != ";":
+            print("Error: recieved ", token, " expected ; ", " on token ", current_token)
+            exit()
+        else:
+            print("token ", token, " number ", current_token, " parsed successfully in call procedure (statement)")
+            current_token += 1
+            token = decode_token(current_token)
+
+        return current_token
+
+    def begin(current_token):
+        token = decode_token(current_token)
+
+        if token == "ident" or token == "call" or token == "if" or token == "while" or token == "begin":
+            print("token ", token, " number ", current_token, " parsed successfully in begin procedure (statement)")
+            current_token = statement(current_token)
+            token = decode_token(current_token)
+        else:
+            print("Error: recieved ", token, " expected ident, call, if, while, or begin ", " on token ", current_token)
+            exit()
+
+        if token != ";" or token != "end":
+            print("Error: recieved ", token, " expected ; or end ", " on token ", current_token)
+            exit()
+        else:
+            if token == "end":
+                print("token ", token, " number ", current_token, " parsed successfully in begin procedure (statement)")
+                current_token += 1
+                token = decode_token(current_token)
+
+            elif token == ";":
+                print("token ", token, " number ", current_token, " parsed successfully in begin procedure (statement)")
+                current_token += 1
+                token = decode_token(current_token)
+
+                if token == "ident" or token == "call" or token == "if" or token == "while" or token == "begin":
+                    print("token ", token, " number ", current_token, " parsed successfully in begin procedure (statement)")
+                    current_token = statement(current_token)
+                    token = decode_token(current_token)
+                else:
+                    print("Error: recieved ", token, " expected ident, call, if, while, or begin ", " on token ", current_token)
+                    exit()
+
+        return current_token
+
+    def if_(current_token):
+        token = decode_token(current_token)
+        return current_token
+
+    def while_(current_token):
+        return current_token
+
     if token == "ident":
-        pass
+        print("token ", token, " number ", current_token, " parsed successfully in statement block")
+        current_token += 1
+        current_token = ident(current_token)
+        token = decode_token(current_token)
 
     if token == "call":
         pass
@@ -220,13 +300,28 @@ def statement(current_token):
         pass
 
     if token == "begin":
-        pass
+        print("token ", token, " number ", current_token, " parsed successfully in statement block")
+        current_token += 1
+        current_token = begin(current_token)
+        token = decode_token(current_token)
 
     if token == "EOL":
-        print("token ", token, " number ", current_token, " parsed successfully in func block")
+        print("token ", token, " number ", current_token, " parsed successfully in statement block")
         current_token += 1
         program(current_token)
 
+    return current_token
+
+def condition(current_token):
+    return current_token
+
+def expression(current_token):
+    return current_token
+
+def term(current_token):
+    return current_token
+
+def factor(current_token):
     return current_token
 
 def main():
