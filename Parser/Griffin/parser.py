@@ -253,10 +253,7 @@ def statement(current_token):
             print("Error: recieved ", token, " expected ident, call, if, while, or begin ", " on token ", current_token)
             exit()
 
-        if token != ";" or token != "end":
-            print("Error: recieved ", token, " expected ; or end ", " on token ", current_token)
-            exit()
-        else:
+        if token == ";" or token == "end":
             if token == "end":
                 print("token ", token, " number ", current_token, " parsed successfully in begin procedure (statement)")
                 current_token += 1
@@ -274,6 +271,10 @@ def statement(current_token):
                 else:
                     print("Error: recieved ", token, " expected ident, call, if, while, or begin ", " on token ", current_token)
                     exit()
+        else:
+            print("Error: recieved ", token, " expected ; or end ", " on token ", current_token)
+            exit()
+            
 
         return current_token
 
